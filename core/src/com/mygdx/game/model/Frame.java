@@ -34,6 +34,18 @@ public class Frame implements Iterable<LineSegment> {
 	public int size() {
 		return lines.size();
 	}
+	
+	public void removeDisconnectedLineSegments() {
+		List<LineSegment> temp = new ArrayList<LineSegment>();
+		
+		for (LineSegment line : lines) {
+			if (line.connected) {
+				temp.add(line);
+			}
+		}
+		
+		lines = temp;
+	}
 
 	@Override
 	public Iterator<LineSegment> iterator() {
