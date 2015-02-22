@@ -24,6 +24,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.model.Frame;
 import com.mygdx.game.model.LineSegment;
+import com.mygdx.game.model.TreeNode;
 
 public class MyGdxGame extends ApplicationAdapter {
 	private Stage stage;
@@ -35,7 +36,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	private ShapeRenderer shapeRenderer;
 	private Frame frame = new Frame();
 	private List<Frame> frames = new ArrayList<Frame>();
-	
+	private TreeNode root=new TreeNode();
 	private Table table;
 
 	public void create () {
@@ -123,6 +124,7 @@ public class MyGdxGame extends ApplicationAdapter {
 								pointBuf = nearest;
 								connected = line.connected;
 								secondPoint = true;
+								
 								return;
 							}
 						}
@@ -131,6 +133,12 @@ public class MyGdxGame extends ApplicationAdapter {
 					}
 					else {
 						connected = true;
+						
+						//root.setLength((frame.getSegment(0)).length);
+						//(root.getTreeSegments()).add(frame.getSegment(0));
+						
+						
+						
 					}
 					
 					secondPoint = true;
