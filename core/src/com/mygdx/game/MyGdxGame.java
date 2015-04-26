@@ -38,6 +38,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	private List<Frame> frames = new ArrayList<Frame>();
 	private TreeNode root=new TreeNode();
 	private Table table;
+	private ArrayList<LineSegment> Paths= new ArrayList<LineSegment>() ;
 
 	public void create () {
 		stage = new Stage();
@@ -62,22 +63,33 @@ public class MyGdxGame extends ApplicationAdapter {
 		nextFrameButton.addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				frame.removeDisconnectedLineSegments();
-				if (currIndex >= frames.size())
-					frames.add(frame);
-				else
-					frames.set(currIndex, frame);
-				
-				currIndex++;
-				if (currIndex >= frames.size()) {
-					frame = new Frame(frame);
+
+				if(currIndex >= 78) {
+					
+					Gdx.app.exit();
 				}
 				else {
-					frame = frames.get(currIndex);
+					if (currIndex >= frames.size()){
+						frames.add(frame);
+						for(int i = 0; i<Paths.size(); i++)
+						System.out.println("" + Paths.get(i).p1); }
+					else
+						frames.set(currIndex, frame);
+					
+					currIndex++;
+					if (currIndex >= frames.size()) {
+						frame = new Frame(frame);
+					}
+					else {
+						frame = frames.get(currIndex);
+					}
+					currImg++;
+					img = new Image(new Texture("1/" + "pic" + String.valueOf(currImg) + ".png"));
+					imgStack.add(img);
+					event.cancel();
 				}
-				currImg++;
-				img = new Image(new Texture("1/" + "pic" + String.valueOf(currImg) + ".png"));
-				imgStack.add(img);
-				event.cancel();
+					
+				
 				return false;
 			}
 		});
@@ -193,12 +205,17 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	private void drawLine(LineSegment line) {
 		if (line.connected)
-			shapeRenderer.setColor(Color.GREEN);
-		else
+		{
+			shapeRenderer.setColor(Color.GREEN); 
+			Paths.add(line);
+			
+		}
+			
+		else 
 			shapeRenderer.setColor(Color.RED);
 		Vector2 p1 = line.p1;
 		Vector2 p2 = line.p2;
-		shapeRenderer.rectLine(p1, p2, 3);
+		shapeRenderer.rectLine(p1, p2, 3); 
 	}
 
 	public void resize (int width, int height) {
