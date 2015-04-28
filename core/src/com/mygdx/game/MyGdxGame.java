@@ -58,6 +58,7 @@ public class MyGdxGame extends ApplicationAdapter {
 	MongoDatabase db = mongoClient.getDatabase("test");
 
 	public void create () {
+	
 		stage = new Stage();
 		shapeRenderer = new ShapeRenderer();
 		Gdx.input.setInputProcessor(stage);
@@ -90,7 +91,7 @@ public class MyGdxGame extends ApplicationAdapter {
 						frames.add(frame);
 						for(int i = 0; i<Paths.size(); i++){
 						System.out.println("" + Paths.get(i).p1);
-						try{database(i,Paths.get(i).p1.x , Paths.get(i).p1.y);}
+						try{database(Paths.get(i).p1.x , Paths.get(i).p1.y);}
 						catch (Exception e){;}
 					    }}
 				
@@ -247,16 +248,16 @@ public class MyGdxGame extends ApplicationAdapter {
 		stage.dispose();
 	}
 	
-	public void database(int i,float x, float y) throws Exception
+	public void database(float x, float y) throws Exception
 	{
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
-		db.getCollection("restaurants").insertOne(
+		db.getCollection("test").insertOne(
 		        new Document()
-		        		.append("_id",i)
+		        		//.append("_id",i)
 		                .append("x", x)
 		                .append("y", y));
 		
-		FindIterable<Document> iterable = db.getCollection("restaurants").find();
+		FindIterable<Document> iterable = db.getCollection("test").find();
 		
 		iterable.forEach(new Block<Document>() {
 		    @Override
