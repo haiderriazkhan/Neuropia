@@ -2,7 +2,6 @@ package com.mygdx.game;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
@@ -25,20 +24,38 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.model.Frame;
 import com.mygdx.game.model.LineSegment;
 import com.mygdx.game.model.TreeNode;
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
+import org.bson.Document;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import org.bson.Document;
+import com.mongodb.Block;
+import com.mongodb.client.FindIterable;
+
+import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Sorts.ascending;
+import static java.util.Arrays.asList;
+
+import static java.util.Arrays.asList;
+
 
 public class MyGdxGame extends ApplicationAdapter {
+	
 	private Stage stage;
-
 	private Image img;
 	private Stack imgStack;
 	private int currImg = 1, currIndex = 0;
-	
 	private ShapeRenderer shapeRenderer;
 	private Frame frame = new Frame();
 	private List<Frame> frames = new ArrayList<Frame>();
 	private TreeNode root=new TreeNode();
 	private Table table;
 	private ArrayList<LineSegment> Paths= new ArrayList<LineSegment>() ;
+	MongoClient mongoClient = new MongoClient();
+	MongoDatabase db = mongoClient.getDatabase("test");
 
 	public void create () {
 		stage = new Stage();
@@ -63,7 +80,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		nextFrameButton.addListener(new InputListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				frame.removeDisconnectedLineSegments();
-
+				                
 				if(currIndex >= 78) {
 					
 					Gdx.app.exit();
@@ -71,8 +88,12 @@ public class MyGdxGame extends ApplicationAdapter {
 				else {
 					if (currIndex >= frames.size()){
 						frames.add(frame);
-						for(int i = 0; i<Paths.size(); i++)
-						System.out.println("" + Paths.get(i).p1); }
+						for(int i = 0; i<Paths.size(); i++){
+						System.out.println("" + Paths.get(i).p1);
+						try{database(i,Paths.get(i).p1.x , Paths.get(i).p1.y);}
+						catch (Exception e){;}
+					    }}
+				
 					else
 						frames.set(currIndex, frame);
 					
@@ -224,6 +245,26 @@ public class MyGdxGame extends ApplicationAdapter {
 
 	public void dispose () {
 		stage.dispose();
+	}
+	
+	public void database(int i,float x, float y) throws Exception
+	{
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.ENGLISH);
+		db.getCollection("restaurants").insertOne(
+		        new Document()
+		        		.append("_id",i)
+		                .append("x", x)
+		                .append("y", y));
+		
+		FindIterable<Document> iterable = db.getCollection("restaurants").find();
+		
+		iterable.forEach(new Block<Document>() {
+		    @Override
+		    public void apply(final Document document) {
+		        System.out.println(document);
+		    }
+		});
+		    
 	}
 }
 
